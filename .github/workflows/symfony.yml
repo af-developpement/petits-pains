@@ -32,6 +32,10 @@ jobs:
       - name: Debug Environment Variables
         run: env
 
+      - name: Test MySQL Connection
+        run: |
+          mysql -h 127.0.0.1 -ulifi5526_petitspains -p'$dh!zi?FizQ3NfLk' -e "SHOW DATABASES;"
+
       - name: Export DATABASE_URL
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
