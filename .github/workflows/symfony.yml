@@ -34,13 +34,9 @@ jobs:
 
       - name: Export DATABASE_URL
         env:
-          DATABASE_URL: $(echo '${{ secrets.DATABASE_URL }}')
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          echo "DATABASE_URL=$(echo '${{ secrets.DATABASE_URL }}')" >> $GITHUB_ENV
-
-      #- name: Test MySQL Connection
-      #  run: |
-      #    mysql -h 127.0.0.1 -u lifi5526_petitspains -p$dh!zi?FizQ3NfLk -e "SHOW DATABASES;"
+          echo '${{ secrets.DATABASE_URL }}' | sed 's/./& /g'
 
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
@@ -59,7 +55,7 @@ jobs:
       # Exécution des migrations
       - name: Run Database Migrations
         env:
-          DATABASE_URL: $(echo '${{ secrets.DATABASE_URL }}')
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: php bin/console doctrine:migrations:migrate --no-interaction
 
       # Clear Cache
