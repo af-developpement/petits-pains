@@ -30,9 +30,7 @@ jobs:
 
       # Load DATABASE_URL from Secrets
       - name: Export DATABASE_URL
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: echo ${{ secrets.DATABASE_URL }} && echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+        run: echo "DATABASE_URL=${{ vars.DATABASE_URL }}" >> $GITHUB_ENV
 
       # Export des variables d'environnement depuis les secrets
       #- name: Set environment variables
