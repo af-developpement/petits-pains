@@ -1,5 +1,5 @@
 {
-    "name": "petits-pains",
+    "name": "af-developpement/petits-pains",
     "description": "A Symfony project for tirage de petits pains de la semaine automatisé",
     "type": "project",
     "license": "proprietary",
