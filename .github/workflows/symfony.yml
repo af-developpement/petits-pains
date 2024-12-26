@@ -30,7 +30,7 @@ jobs:
 
       # Load DATABASE_URL from Secrets
       - name: Export DATABASE_URL
-        run: echo "DATABASE_URL=${{ vars.DATABASE_URL }}" >> $GITHUB_ENV
+        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
       # Export des variables d'environnement depuis les secrets
       #- name: Set environment variables
@@ -60,7 +60,7 @@ jobs:
       # Exécution des migrations
       - name: Run Database Migrations
         env:
-          DATABASE_URL: ${{ vars.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: php bin/console doctrine:migrations:migrate --no-interaction
 
       # Déploiement du projet (transfert des fichiers)
