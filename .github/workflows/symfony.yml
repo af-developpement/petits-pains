@@ -10,6 +10,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: PROD
 
     steps:
       # Configuration de PHP 8.4.1
@@ -33,7 +34,7 @@ jobs:
 
       # Load DATABASE_URL from Secrets
       - name: Export DATABASE_URL
-        run: echo "DATABASE_URL=mysql://TEST" >> $GITHUB_ENV
+        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
       # Export des variables d'environnement depuis les secrets
       #- name: Set environment variables
