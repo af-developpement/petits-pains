@@ -46,9 +46,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
-      - name: Check Symfony requirements
-        run: vendor/bin/requirements-checker
-
       # Installation des dépendances Composer
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
