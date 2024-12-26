@@ -1,0 +1,58 @@
+name: Symfony
+
+on:
+  push:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Configuration de PHP 8.4.1
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4.1'
+
+      # Récupération du code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Mise en cache des dépendances Composer
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      # Installation des dépendances Composer
+      - name: Install Dependencies
+        run: composer install --no-dev --optimize-autoloader --no-progress
+
+      # Exécution des migrations
+      - name: Run Database Migrations
+        env:
+          APP_ENV: prod
+          DATABASE_URL: "mysql://lifi5526_petits-pains:$dh!zi?FizQ3NfLk@localhost/lifi5526_petits-pains"
+        run: php bin/console doctrine:migrations:migrate --no-interaction
+
+      # Déploiement du projet (transfert des fichiers)
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          source: ./
+          target: /home/lifi5526/petits-pains.af-developpement.com
+          
+      # Clear Cache
+      - name: Clear Symfony Cache
+        run: php bin/console cache:clear --env=prod
