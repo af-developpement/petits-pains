@@ -22,7 +22,9 @@ class ParticipantRepository extends ServiceEntityRepository
 
         if ($lastWinner) {
             $qb->where('p != :lastWinner')
-                ->setParameter('lastWinner', $lastWinner);
+                ->andWhere('p.isActive = :active')
+                ->setParameter('lastWinner', $lastWinner)
+                ->setParameter('active', true);
         }
 
         return $qb->getQuery()->getResult();
