@@ -39,6 +39,10 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
           echo "Injected DATABASE_URL: ${{ secrets.DATABASE_URL }}"
 
+      - name: Test MySQL Connection
+        run: |
+          mysql -h 127.0.0.1 -u lifi5526_petits-pains -p'$dh!zi?FizQ3NfLk' -e "SHOW DATABASES;"
+
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
         id: composer-cache
