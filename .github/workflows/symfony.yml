@@ -1,4 +1,4 @@
-name: Symfony
+name: CI/CD Symfony Petits Pains
 
 on:
   push:
@@ -22,16 +22,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
       # Export des variables d'environnement depuis les secrets
-      - name: Set environment variables
-        env:
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          export DATABASE_URL="mysql://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
-          echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
+      #- name: Set environment variables
+      #  env:
+      #    DB_USER: ${{ secrets.DB_USER }}
+      #    DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      #    DB_HOST: ${{ secrets.DB_HOST }}
+      #    DB_NAME: ${{ secrets.DB_NAME }}
+      #  run: |
+      #    export DATABASE_URL="mysql://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
+      #    echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
 
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
@@ -43,14 +46,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
+      - name: Check Symfony requirements
+        run: vendor/bin/requirements-checker
+
       # Installation des dépendances Composer
       - name: Install Dependencies
-        run: composer install --no-dev --optimize-autoloader --no-progress
-
-      # Création de la base de données
-      - name: Create MySQL database IF NOT EXISTS
-        run: |
-          echo "CREATE DATABASE IF NOT EXISTS $DB_NAME;" | mysql -u $DB_USER -p$DB_PASSWORD -h $DB_HOST
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       # Exécution des migrations
       - name: Run Database Migrations
