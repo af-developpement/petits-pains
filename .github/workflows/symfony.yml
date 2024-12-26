@@ -30,8 +30,8 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          export DATABASE_URL="mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}"
-          echo "DATABASE_URL=${DATABASE_URL}" >> $GITHUB_ENV
+          export DATABASE_URL="mysql://$DB_USER:$DB_PASSWORD@$DB_HOST/$DB_NAME"
+          echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
 
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
