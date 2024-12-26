@@ -34,7 +34,7 @@ jobs:
 
       - name: Test MySQL Connection
         run: |
-          mysql -h 127.0.0.1 -ulifi5526_petitspains -p'$dh!zi?FizQ3NfLk' -e "SHOW DATABASES;"
+          mysql -h 127.0.0.1 -ulifi5526_petits-pains -p'$dh!zi?FizQ3NfLk' -e "SHOW DATABASES;"
 
       - name: Export DATABASE_URL
         env:
