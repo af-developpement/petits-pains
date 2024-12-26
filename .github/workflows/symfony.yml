@@ -22,10 +22,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Export des variables d'environnement depuis le fichier .env
-      - name: Export environment variables from .env
+      # Export des variables d'environnement depuis les secrets
+      - name: Set environment variables
+        env:
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          export $(grep -v '^#' .env | xargs)
+          export DATABASE_URL="mysql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}"
+          echo "DATABASE_URL=${DATABASE_URL}" >> $GITHUB_ENV
 
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
@@ -41,11 +47,13 @@ jobs:
       - name: Install Dependencies
         run: composer install --no-dev --optimize-autoloader --no-progress
 
+      # Création de la base de données
+      - name: Create MySQL database IF NOT EXISTS
+        run: |
+          echo "CREATE DATABASE IF NOT EXISTS $DB_NAME;" | mysql -u $DB_USER -p$DB_PASSWORD -h $DB_HOST
+
       # Exécution des migrations
       - name: Run Database Migrations
-        env:
-          APP_ENV: prod
-          DATABASE_URL: "mysql://lifi5526_petits-pains:$dh!zi?FizQ3NfLk@localhost/lifi5526_petits-pains"
         run: php bin/console doctrine:migrations:migrate --no-interaction
 
       # Déploiement du projet (transfert des fichiers)
