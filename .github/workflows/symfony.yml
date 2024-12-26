@@ -41,7 +41,7 @@ jobs:
 
       - name: Test MySQL Connection
         run: |
-          mysql -h 127.0.0.1 -u lifi5526_petits-pains -p'$dh!zi?FizQ3NfLk' -e "SHOW DATABASES;"
+          mysql -h 127.0.0.1 -u lifi5526_petitspains -p'$dh!zi?FizQ3NfLk' -e "SHOW DATABASES;"
 
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
