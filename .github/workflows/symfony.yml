@@ -28,6 +28,9 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
+      - name: Debug Environment Variables
+        run: env
+
       # Load DATABASE_URL from Secrets
       - name: Export DATABASE_URL
         run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
