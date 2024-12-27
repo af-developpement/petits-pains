@@ -32,6 +32,10 @@ jobs:
       - name: Debug Environment Variables
         run: env
 
+      - name: Test CLI
+        run: |
+          echo curl ifconfig.me
+
       - name: Export DATABASE_URL
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -61,3 +65,6 @@ jobs:
       # Clear Cache
       - name: Clear Symfony Cache
         run: php bin/console cache:clear --env=prod
+
+#mysql://lifi5526_petitspains:%%24dh%%21zi%%3FfizQ3NfLk@127.0.0.1/lifi5526_petitspains
+#mysql://lifi5526_petitspains2:3MHeM&a9Xgp4pcSX@109.234.166.111/lifi5526_petitspains
