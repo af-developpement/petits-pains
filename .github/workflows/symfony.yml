@@ -26,11 +26,6 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Debug SSH Key Installation
-        run: |
-          ls -l ~/.ssh
-          cat ~/.ssh/id_rsa
-
       - name: install ssh keys
         # https://stackoverflow.com/a/70447517
         run: |
@@ -38,6 +33,9 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 109.234.166.111 >> ~/.ssh/known_hosts
+
+      - name: Test SSH Connection
+        run: ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no user@109.234.166.111 "echo Connected!"
 
       - name: Debug SSH Key Installation
         run: |
