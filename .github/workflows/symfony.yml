@@ -34,7 +34,7 @@ jobs:
 
       - name: Test CLI
         run: |
-          echo curl ifconfig.me
+          curl ifconfig.me
 
       - name: Export DATABASE_URL
         env:
