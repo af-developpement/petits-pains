@@ -34,7 +34,7 @@ jobs:
       #    ssh-keyscan -H 109.234.166.111 >> ~/.ssh/known_hosts
 
       - name: Test SSH Connection
-        run: ssh-keyscan -H 109.234.166.111 >> ~/.ssh/known_hosts && ssh -i <(echo "${{ secrets.SSH_PRIVATE_KEY }}") -o StrictHostKeyChecking=no lifi5526@109.234.166.111 "echo Connected!"
+        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh -i /dev/stdin -o StrictHostKeyChecking=no lifi5526@109.234.166.111 "echo Connected!"
 
       - name: Debug SSH Key Installation
         run: |
