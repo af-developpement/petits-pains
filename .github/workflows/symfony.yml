@@ -29,18 +29,12 @@ jobs:
       - name: Validate composer.json and composer.lock
         run: composer validate
 
-      - name: Debug Environment Variables
-        run: env
+      - name: Test Network Connectivity
+        run: ping -c 4 109.234.166.111
 
-      - name: Test CLI
+      - name: Test Remote MySQL Connection
         run: |
-          curl ifconfig.me
-
-      - name: Export DATABASE_URL
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: |
-          echo DATABASE_URL="$DATABASE_URL" | sed 's/./& /g'
+          mysql -h 109.234.166.111 -u lifi5526_petitspains2 -p'3MHeM&a9Xgp4pcSX' -e "SHOW DATABASES;"
 
       # Mise en cache des dépendances Composer
       - name: Cache Composer packages
