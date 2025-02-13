@@ -1,75 +1,74 @@
-name: CI/CD Symfony Petits Pains
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "master" ]
-
-permissions:
-  contents: read
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  deploy:
+  build-and-test:
     runs-on: ubuntu-latest
-    environment: PROD
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: app_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
-      # Configuration de PHP 8.4.1
+      - uses: actions/checkout@v3
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4.1'
-
-      # Récupération du code
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
-      #- name: install ssh keys
-      #  # https://stackoverflow.com/a/70447517
-      #  run: |
-      #    echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      #    chmod 600 ~/.ssh/id_rsa
-      #    ssh-keyscan -H 109.234.166.111 >> ~/.ssh/known_hosts
-
-      - name: Test SSH Connection
-        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" | ssh -i /dev/stdin -o StrictHostKeyChecking=no lifi5526@109.234.166.111 "echo Connected!"
-
-      - name: Debug SSH Key Installation
-        run: |
-          ls -l ~/.ssh
-          cat ~/.ssh/id_rsa
-
-      - name: connect and pull
-        run: ssh lifi5526@109.234.166.111 "cd ~/petits-pains.af-developpement.com && git checkout master && git pull && exit"
-
-      - name: cleanup
-        run: rm -rf ~/.ssh
-
-      # Mise en cache des dépendances Composer
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      # Installation des dépendances Composer
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, mbstring
+          
+      - name: Copy .env.test
+        run: php -r "file_exists('.env.test') || copy('.env.test.example', '.env.test');"
+        
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-      # Exécution des migrations
-      - name: Run Database Migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: php bin/console doctrine:migrations:migrate --no-interaction
-
-      # Clear Cache
-      - name: Clear Symfony Cache
-        run: php bin/console cache:clear --env=prod
-
-#mysql://lifi5526_petitspains:%%24dh%%21zi%%3FfizQ3NfLk@127.0.0.1/lifi5526_petitspains
-#mysql://lifi5526_petitspains2:3MHeM&a9Xgp4pcSX@109.234.166.111/lifi5526_petitspains
+        
+      - name: Directory Permissions
+        run: chmod -R 777 var/
+        
+      - name: Create Database
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:schema:create --env=test
+          
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse src tests
+        
+      - name: PHP_CodeSniffer
+        run: vendor/bin/phpcs src/
+        
+      - name: PHPUnit
+        run: vendor/bin/phpunit
+        
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            cd /root/app/petits-pains
+            git pull origin main
+            composer install --no-dev --optimize-autoloader
+            php bin/console cache:clear
+            php bin/console doctrine:migrations:migrate --no-interaction
+            php bin/console assets:install
