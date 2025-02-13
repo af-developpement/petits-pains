@@ -11,11 +11,11 @@ class ParticipantFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $participants = [
-            ['prenom' => 'Adrien', 'nom' => 'Dupont', 'isActive' => true],
-            ['prenom' => 'Alexandre', 'nom' => 'Martin', 'isActive' => false],
-            ['prenom' => 'Ophélie', 'nom' => 'Vantours', 'isActive' => true],
-            ['prenom' => 'Alexis', 'nom' => 'Bernard', 'isActive' => true],
-            ['prenom' => 'François', 'nom' => 'Lemoine', 'isActive' => false],
+            ['prenom' => 'Adrien', 'nom' => null, 'isActive' => true],
+            ['prenom' => 'Alexandre', 'nom' => null, 'isActive' => false],
+            ['prenom' => 'Ophélie', 'nom' => null, 'isActive' => true],
+            ['prenom' => 'Alexis', 'nom' => null, 'isActive' => true],
+            ['prenom' => 'François', 'nom' => null, 'isActive' => false],
         ];
 
         foreach ($participants as $data) {
