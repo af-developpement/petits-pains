@@ -35,8 +35,10 @@ jobs:
       - name: Install Dependencies
         run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
         
-      - name: Directory Permissions
-        run: chmod -R 777 var/
+      - name: Create var directory and set permissions
+        run: |
+          mkdir -p var
+          chmod -R 777 var/
         
       - name: Create Database
         run: |
