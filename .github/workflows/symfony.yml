@@ -33,7 +33,7 @@ jobs:
         run: php -r "file_exists('.env.test') || copy('.env.test.example', '.env.test');"
         
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
         
       - name: Directory Permissions
         run: chmod -R 777 var/
