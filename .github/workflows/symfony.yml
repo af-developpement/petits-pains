@@ -61,10 +61,10 @@ jobs:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PROD.SSH_HOST }}
-          username: ${{ secrets.PROD.SSH_USER }}
-          key: ${{ secrets.PROD.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PROD.SSH_PASSPHRASE }}
+          host: ${{ secrets.PROD_SSH_HOST }}
+          username: ${{ secrets.PROD_SSH_USER }}
+          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PROD_SSH_PASSPHRASE }}
           script: |
             cd /root/app/petits-pains
             git pull origin main
