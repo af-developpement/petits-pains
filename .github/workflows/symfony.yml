@@ -23,11 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      #- name: Setup PHP
-      #  uses: shivammathur/setup-php@v2
-      #  with:
-      #    php-version: '8.2'
-      #    extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, mbstring
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, mbstring
           
       #- name: Copy .env.test
       #  run: php -r "file_exists('.env.test') || copy('.env.test.example', '.env.test');"
@@ -55,7 +55,7 @@ jobs:
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     
     steps:
       - name: Deploy to VPS
