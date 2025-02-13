@@ -55,16 +55,17 @@ jobs:
   deploy:
     needs: build-and-test
     runs-on: ubuntu-latest
+    environment: PROD
     if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     
     steps:
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PROD_SSH_HOST }}
-          username: ${{ secrets.PROD_SSH_USER }}
-          key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PROD_SSH_PASSPHRASE }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd /root/app/petits-pains
             git pull origin main
