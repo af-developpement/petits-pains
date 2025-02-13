@@ -16,6 +16,13 @@ class ParticipantRepository extends ServiceEntityRepository
         parent::__construct($registry, Participant::class);
     }
 
+    /**
+     * Trouve tous les participants éligibles pour le tirage au sort.
+     *
+     * @param Participant|null $lastWinner Le dernier gagnant à exclure des résultats
+     *
+     * @return array<int, Participant> Tableau des entités Participant éligibles
+     */
     public function findEligibleParticipants(?Participant $lastWinner): array
     {
         $qb = $this->createQueryBuilder('p');

@@ -29,28 +29,28 @@ jobs:
           php-version: '8.2'
           extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json, mbstring
           
-      #- name: Copy .env.test
-      #  run: php -r "file_exists('.env.test') || copy('.env.test.example', '.env.test');"
+      - name: Copy .env.test
+        run: php -r "file_exists('.env.test') || copy('.env.test.example', '.env.test');"
         
-      #- name: Install Dependencies
-      #  run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
         
-      #- name: Directory Permissions
-      #  run: chmod -R 777 var/
+      - name: Directory Permissions
+        run: chmod -R 777 var/
         
-      #- name: Create Database
-      #  run: |
-      #    php bin/console doctrine:database:create --env=test --if-not-exists
-      #    php bin/console doctrine:schema:create --env=test
+      - name: Create Database
+        run: |
+          php bin/console doctrine:database:create --env=test --if-not-exists
+          php bin/console doctrine:schema:create --env=test
           
-      #- name: PHPStan
-      #  run: vendor/bin/phpstan analyse src tests
+      - name: PHPStan
+        run: vendor/bin/phpstan analyse
         
-      #- name: PHP_CodeSniffer
-      #  run: vendor/bin/phpcs src/
+      - name: PHP_CodeSniffer
+        run: vendor/bin/php-cs-fixer fix
         
-      #- name: PHPUnit
-      #  run: vendor/bin/phpunit
+      - name: PHPUnit
+        run: vendor/bin/phpunit
         
   deploy:
     needs: build-and-test

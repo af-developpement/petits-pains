@@ -23,3 +23,4 @@ services:
     App\Command\TirageAuSortCommand:
         arguments:
             $slackWebhookUrl: '%env(SLACK_WEBHOOK_URL)%'
+            $slackWebhookTestUrl: '%env(SLACK_WEBHOOK_TEST_URL)%'

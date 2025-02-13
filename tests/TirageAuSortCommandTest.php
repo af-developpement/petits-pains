@@ -64,10 +64,11 @@ class TirageAuSortCommandTest extends KernelTestCase
             ->method('request') // S'assurer que la notification Slack est envoyée
             ->with(
                 'POST',
-                'SLACK_WEBHOOK_URL', // Remplacez par l'URL réelle si nécessaire
+                'SLACK_WEBHOOK_TEST_URL', // Remplacez par l'URL réelle si nécessaire
                 $this->callback(function ($options) {
                     $this->assertArrayHasKey('json', $options);
                     $this->assertStringContainsString('Jean Dupont', $options['json']['text']);
+
                     return true;
                 })
             );
@@ -77,7 +78,8 @@ class TirageAuSortCommandTest extends KernelTestCase
             $participantRepository,
             $tirageRepository,
             $httpClient,
-            'SLACK_WEBHOOK_URL'
+            'SLACK_WEBHOOK_URL',
+            'SLACK_WEBHOOK_TEST_URL'
         );
 
         // Tester la commande
@@ -113,7 +115,8 @@ class TirageAuSortCommandTest extends KernelTestCase
             $participantRepository,
             $tirageRepository,
             $httpClient,
-            'SLACK_WEBHOOK_URL'
+            'SLACK_WEBHOOK_URL',
+            'SLACK_WEBHOOK_TEST_URL'
         );
 
         // Tester la commande

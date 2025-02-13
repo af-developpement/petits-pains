@@ -9,7 +9,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 #[AsCommand(
@@ -18,13 +17,20 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 )]
 class TirageAuSortCommand extends Command
 {
+    private string $activeWebhookUrl;
+
     public function __construct(
         private ParticipantRepository $participantRepository,
         private TirageRepository $tirageRepository,
         private HttpClientInterface $httpClient,
-        private string $slackWebhookUrl
+        string $slackWebhookUrl,
+        ?string $slackWebhookTestUrl = null,
     ) {
         parent::__construct();
+
+        $this->activeWebhookUrl = !empty($slackWebhookTestUrl)
+            ? $slackWebhookTestUrl
+            : $slackWebhookUrl;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -58,16 +64,16 @@ class TirageAuSortCommand extends Command
 
     private function sendSlackNotification(string $prenom, ?string $nom): void
     {
-        $nomComplet = trim($prenom . ' ' . ($nom ?? ''));
+        $nomComplet = trim($prenom.' '.($nom ?? ''));
         $message = [
             'text' => sprintf(
                 "🎉 *Tirage au sort de la semaine* 🎉\nFélicitations à *%s* qui a été tiré(e) au sort cette semaine !",
                 $nomComplet
-            )
+            ),
         ];
 
-        $this->httpClient->request('POST', $this->slackWebhookUrl, [
-            'json' => $message
+        $this->httpClient->request('POST', $this->activeWebhookUrl, [
+            'json' => $message,
         ]);
     }
 }

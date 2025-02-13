@@ -10,6 +10,7 @@ class Tirage
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    // @phpstan-ignore-next-line
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Participant::class)]
@@ -32,6 +33,7 @@ class Tirage
     public function setParticipant(?Participant $participant): self
     {
         $this->participant = $participant;
+
         return $this;
     }
 
@@ -43,6 +45,7 @@ class Tirage
     public function setDateTirage(\DateTime $dateTirage): self
     {
         $this->dateTirage = $dateTirage;
+
         return $this;
     }
 }
