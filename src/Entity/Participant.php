@@ -15,7 +15,7 @@ class Participant
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $prenom = null;
+    private string $prenom;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $nom = null;
@@ -28,7 +28,7 @@ class Participant
         return $this->id;
     }
 
-    public function getPrenom(): ?string
+    public function getPrenom(): string
     {
         return $this->prenom;
     }
