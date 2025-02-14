@@ -39,7 +39,17 @@ jobs:
         run: |
           mkdir -p var
           chmod -R 777 var/
-        
+
+      - name: Update .env.test
+        run: |
+          echo "DATABASE_URL=mysql://root:password@127.0.0.1:3306/app_test?serverVersion=8.0" >> .env.test
+
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -P"3306" --silent; do
+            sleep 1
+          done
+
       - name: Create Database
         run: |
           php bin/console doctrine:database:create --env=test --if-not-exists
