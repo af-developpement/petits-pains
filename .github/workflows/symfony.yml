@@ -79,49 +79,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            set -e  # Arrête le script si une commande échoue
-            echo "Starting deployment..."
             cd /root/app/petits-pains
-            echo "Current directory: $(pwd)"
-            
-            # Configuration Git pour le répertoire
             git config --global --add safe.directory /root/app/petits-pains
-            
-            # Git operations
-            echo "Git status before fetch:"
-            git status
             git fetch origin
             git reset --hard origin/master
             git clean -fd
-            echo "Git status after reset:"
-            git status
-            
-            # Permissions
             sudo chown -R www-data:www-data .
             sudo chmod -R 775 var/
-            
-            # Composer and Symfony
             composer update --no-dev --optimize-autoloader
             php bin/console doctrine:migrations:migrate --no-interaction
-            php bin/console doctrine:schema:validate
             php bin/console cache:clear
-            
-            # Vérification finale
-            echo "Deployment completed"
-            echo "Current commit hash:"
-            git rev-parse HEAD
-
-      - name: Verify Deployment
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: |
-            cd /root/app/petits-pains
-            echo "Application version:"
-            php bin/console about
-            echo "Database status:"
-            php bin/console doctrine:schema:validate
-
