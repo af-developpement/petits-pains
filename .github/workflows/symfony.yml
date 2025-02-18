@@ -84,6 +84,9 @@ jobs:
             cd /root/app/petits-pains
             echo "Current directory: $(pwd)"
             
+            # Configuration Git pour le répertoire
+            git config --global --add safe.directory /root/app/petits-pains
+            
             # Git operations
             echo "Git status before fetch:"
             git status
@@ -121,3 +124,4 @@ jobs:
             php bin/console about
             echo "Database status:"
             php bin/console doctrine:schema:validate
+
