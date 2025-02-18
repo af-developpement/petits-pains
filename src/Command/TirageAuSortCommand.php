@@ -45,18 +45,14 @@ class TirageAuSortCommand extends Command
             return Command::FAILURE;
         }
 
-        // Tirer au sort un participant
         $gagnant = $participantsEligibles[array_rand($participantsEligibles)];
 
-        // Créer le nouveau tirage
         $tirage = new Tirage();
         $tirage->setParticipant($gagnant);
         $tirage->setDateTirage(new \DateTime());
 
-        // Sauvegarder le tirage
         $this->tirageRepository->save($tirage, true);
 
-        // Envoyer la notification Slack
         $this->sendSlackNotification($gagnant->getPrenom(), $gagnant->getNom());
 
         return Command::SUCCESS;
